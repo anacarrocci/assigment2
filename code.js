@@ -85,54 +85,37 @@ function findLongestWord(txt) {
     let strArrayA = txtNoPunctuation(txt);
     let strArrayB = cleanTxt(strArrayA);
     
-    let orderedArray = strArrayB.sort((wordA, wordB) => {
-           return wordA.length < wordB.length;
+    let orderedArray = strArrayB.sort(function (wordA, wordB){
+           return  wordB.length - wordA.length || wordA.localeCompare(wordB);
     });
    
     let filterArray = orderedArray.filter((item, pos, ary) => {
            return !pos || item != ary[pos - 1];
     });
-   
-    return filterArray.filter((i, index) => (index <= 10));
+
+    return filterArray.filter((i, index) => (index < 10));
 }
 
 function mostFrequent(txt){
-//    var obj = {}, mostFreq = 0, which = [];
-
-
-    let wordCounts = { };
-    let wordsA = txtNoPunctuation(txt);
-    let wordsB = cleanTxt(wordsA);
-    let arr = [];
-    for(let i = 0; i < wordsB.length; i++){
-        wordCounts[wordsB[i]] = (wordCounts[wordsB[i]] || 0) + 1;
-    }
-//        for(let j in wordCounts[wordsB[i]]) {
-//            if (wordCounts.hasOwnProperty(j)){
-//                arr.push(wordCounts[wordsB[j]]|| 0) + 1;
-//            }
-//        }
-//    }
-
-    return wordCounts; //filter((i, index) => (index <= 10));
+    let strArrayA = txtNoPunctuation(txt);
+    let strArrayB = cleanTxt(strArrayA);
+    
+    let frequency = {};
+    
+    strArrayB.forEach(function(value) {
+          frequency[value] = 0;
+    });
+    
+    let uniques = strArrayB.filter(function(value) {
+          return ++frequency[value] == 1;
+    });
+    
+    uniques.sort(function(a, b) {
+            return frequency[b] - frequency[a];
+    });
+    
+    return uniques.filter((i, index) => (index <= 10));
 }
-
-//    wordsB.forEach(ea => {
-//        if (!obj[ea]) {
-//            obj[ea] = 1;
-//        } else {
-//            obj[ea]++;
-//        }
-//        if (obj[ea] > mostFreq) {
-//            mostFreq = obj[ea];
-//            which = [ea];
-//        } else if (obj[ea] === mostFreq) {
-//            which.push(ea);
-//        }
-//    });
-//
-//    return which;
-//}
 
 
 function txtNoPunctuation (txt){
