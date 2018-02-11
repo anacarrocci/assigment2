@@ -114,7 +114,7 @@ function mostFrequent(txt){
 //        }
 //    }
 
-    return wordCounts.from(); //filter((i, index) => (index <= 10));
+    return wordCounts; //filter((i, index) => (index <= 10));
 }
 
 //    wordsB.forEach(ea => {
