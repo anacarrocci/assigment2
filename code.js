@@ -1,6 +1,10 @@
-//
-// this is just a stub for a function you need to implement
-//
+/*
+ SENG-513 WINTER 2018
+ Assignment 2
+ Carrocci, Ana
+ 
+ The following program implements getStats(txt) which computes information from a provided text
+ */
 function getStats(txt) {
     
     return {
@@ -17,24 +21,50 @@ function getStats(txt) {
     };
 }
 
+// Description: Computes the number of chars in the text
+// Parameter: txt
+// Returns: number of chars in the text
 function charCount(txt){
     return txt.length;
 }
 
-function linesCount(txt){
-    return txt.split('\n').length;
-}
+// Description: Computes the number of words in the text
+// Parameter: txt
+// Returns: number of words in the txt, unless txt is empty then it returns 0
 
 function wordCount(txt) {
-    let str = cleanTxt(txt);
-    return str.length;
+    if (txt.length === 0){
+        return 0;
+    } else{
+        let str = cleanTxt(txt);
+        return str.length;
+    }
 }
+
+// Description: Computes the number of lines in the text
+// Parameter: txt
+// Returns: number of lines in the txt, unless txt is empty then it returns 0
+
+function linesCount(txt){
+    if (txt.length === 0){
+        return 0;
+    } else{
+        return txt.split('\n').length;
+    }
+}
+
+// Description: Computes the number of empty lines in the text
+// Parameter: txt
+// Returns: number of empty lines in the txt
 
 function nonEmptyLines(txt){
     let count = (txt.match(/^\s*\S/gm) || "").length;
     return count;
 }
 
+// Description: Computes the max line length in the text
+// Parameter: txt
+// Returns: max line length in the txt
 function maxLength(txt){
     let nLines = txt.split('\n');
     let i = 0;
@@ -49,18 +79,28 @@ function maxLength(txt){
     return max.length;
 }
 
+// Description: Computes the average word length in the text
+// Parameter: txt
+// Returns: average word length in the txt, unless txt is empty then it returns 0
 function average(txt){
-    let strNoPunctuation = txtNoPunctuation(txt);
-    let nWords = wordCount(strNoPunctuation);
-    let wordArray = cleanTxt(strNoPunctuation);
-    let wordAvg = 0;
-    for (let i = 0; i < nWords; i++){
-        wordAvg = wordAvg + wordArray[i].length;
+    if (txt.length === 0){
+        return 0;
+    } else{
+        let strNoPunctuation = txtNoPunctuation(txt);
+        let nWords = wordCount(strNoPunctuation);
+        let wordArray = cleanTxt(strNoPunctuation);
+        let wordAvg = 0;
+        for (let i = 0; i < nWords; i++){
+            wordAvg = wordAvg + wordArray[i].length;
+        }
+        let averageLenth = wordAvg / nWords;
+        return averageLenth;
     }
-    let averageLenth = wordAvg / nWords;
-    return averageLenth;
 }
 
+// Description: Finds all the palindrome words in the text
+// Parameter: txt
+// Returns: array with all palindromes
 function findPalindromes(txt){
     let originalArrayA = txtNoPunctuation(txt);
     let originalArrayB = cleanTxt(originalArrayA);
@@ -81,6 +121,9 @@ function findPalindromes(txt){
     return palindrome;
 }
 
+// Description: Finds the first 10 longest words in the text
+// Parameter: txt
+// Returns: array with the 10 longest words
 function findLongestWord(txt) {
     let strArrayA = txtNoPunctuation(txt);
     let strArrayB = cleanTxt(strArrayA);
@@ -96,28 +139,67 @@ function findLongestWord(txt) {
     return filterArray.filter((i, index) => (index < 10));
 }
 
+// Description: Finds most frequent words in the text
+// Parameter: txt
+// Returns: array with the forst 10 most frequent words + number of times it appears
 function mostFrequent(txt){
-    let strArrayA = txtNoPunctuation(txt);
-    let strArrayB = cleanTxt(strArrayA);
-    
-    let frequency = {};
-    
-    strArrayB.forEach(function(value) {
-          frequency[value] = 0;
-    });
-    
-    let uniques = strArrayB.filter(function(value) {
-          return ++frequency[value] == 1;
+    let dictionary = {};
+    let wordLengths = [];
+    let uniqueWords = [];
+    let strArray = [];
+    let word = "";
+    let c;
+   
+    if(txt.length !== 0) {
+        for (c of txt) {
+            if (c.match(/^[0-9a-zA-Z]+$/)) {
+                word += c;
+            }else {
+                if (word.length > 0) {
+                    addToDictionary();
+                }
+            }
+        }
+        if (c.match(/^[0-9a-zA-Z]+$/)) {
+            addToDictionary();
+        }
+    }
+
+    let uniques = Object.keys(dictionary).map(function(key) {
+         return [key, dictionary[key]];
     });
     
     uniques.sort(function(a, b) {
-            return frequency[b] - frequency[a];
+            return b[1] - a[1] || a[0].localeCompare(b[0]);
     });
     
-    return uniques.filter((i, index) => (index <= 10));
+    for (let i = 0; i < uniques.length; i++) {
+        strArray.push(uniques[i][0] + "(" + uniques[i][1] + ")");
+    }
+    
+    return strArray.filter((i, index) => (index < 10));
+    
+    function addToDictionary() {
+        wordLengths.push(word.length);
+        let wordCounter = wordCount(txt);
+        wordCounter++;
+        word = word.toLowerCase();
+        if (uniqueWords.indexOf(word) === -1) {
+            uniqueWords.push(word);
+        }
+        if (isNaN(dictionary[word])) {
+            dictionary[word] = 1;
+        }
+        else {
+            dictionary[word]++;
+        }
+        word = "";
+    }
 }
 
-
+// Description: Helper function, that eliminates all punctuation from the text
+// Parameter: txt
+// Returns: txt without symbols
 function txtNoPunctuation (txt){
     let strA = txt.toLowerCase();
     let strB = strA.replace(/[+]/g, " ");
@@ -126,6 +208,9 @@ function txtNoPunctuation (txt){
     return strD;
 }
 
+// Description: Helper function, that eliminates regex from the text
+// Parameter: txt
+// Returns: txt without regex
 function cleanTxt(txt){
     let str = txt.trim();
     let re = /\s+/g;
